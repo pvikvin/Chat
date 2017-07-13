@@ -6,12 +6,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.gemicle.chat.enums.MethodsType;
 import com.gemicle.chat.pojo.Message;
-import com.gemicle.chat.service.MessageService;
+import com.gemicle.chat.service.message.MessageServiceHibernate;
 
 public class MessageGenerateCommand implements Command<Message>{
 
 	private ObjectMapper mapper = new ObjectMapper();
-	private MessageService service = new MessageService();
+	private MessageServiceHibernate service = new MessageServiceHibernate();
 	private MethodsType method;
 	private String jsonObject = "";
 	

@@ -22,4 +22,13 @@ public class SocketManager {
 	public static Map<User, Socket> getUserSockets(){
 		return userSockets;
 	}
+	
+	public static User getUser(Socket socketSender) {
+		for (Map.Entry<User, Socket> entry : getUserSockets().entrySet()) {
+			if (entry.getValue().equals(socketSender)) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
 }

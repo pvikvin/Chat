@@ -39,28 +39,18 @@ public class ServerMessageTest {
 
 			InetAddress ipAddress = InetAddress.getByName(IP);
 			for (int i = 1; i < 3; i++) {
-				user = new User("User " + i);
 
+				user = new User("User " + i);
 				socket = new Socket(ipAddress, PORT);
 
 				Map<String, String> parametrs = new HashMap<String, String>();
 				parametrs.put(METHOD_KEY, "CREATE_USER");
 				parametrs.put(OBJECT_KEY, mapper.writeValueAsString(user));
-
-				result = mapper.writeValueAsString(parametrs);
-
-				executor.submit(new OutputMessageThread(socket, result));
 				
+				result = mapper.writeValueAsString(parametrs);
+				executor.submit(new OutputMessageThread(socket, result));
 				executor.submit(new InputMessageThread(socket));
 				
-//				Runnable outMessage = new OutputMessageThread(socket, result);
-//				Thread threadOut = new Thread(outMessage);
-//				threadOut.start();
-				
-//				Runnable inputMessage = new InputMessageThread(socket);
-//				Thread threadIn = new Thread(inputMessage);
-//				threadIn.start();
-
 			}
 
 			Message message = new Message();
@@ -76,7 +66,6 @@ public class ServerMessageTest {
 			Runnable outMessage = new OutputMessageThread(socket, result);
 			Thread threadOut = new Thread(outMessage);
 			threadOut.start();
-
 			threadOut.join();
 
 		} catch (UnknownHostException e) {

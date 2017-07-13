@@ -31,13 +31,15 @@ public class InputMessageThread extends Thread {
 			sin = socket.getInputStream();
 			in = new DataInputStream(sin);
 			String result = "";
+			User user;
+			Message message;
 			while (true) {
 				result = in.readUTF();
 				
 				if(counter == 0){
-					User user = mapper.readValue(result, User.class);
+					user = mapper.readValue(result, User.class);
 				}else{
-					Message message = mapper.readValue(result, Message.class);;
+					message = mapper.readValue(result, Message.class);
 				}
 				
 				counter++;

@@ -1,4 +1,4 @@
-package com.gemicle.chat.service;
+package com.gemicle.chat.service.message;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -6,13 +6,13 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import com.gemicle.chat.command.CommandService;
 import com.gemicle.chat.enums.MethodsType;
+import com.gemicle.chat.service.message.output.MessageOutputGenerator;
 
 public class MessageInput extends Thread {
 
@@ -21,7 +21,6 @@ public class MessageInput extends Thread {
 	private Socket socket;
 	private ObjectMapper mapper = new ObjectMapper();
 	private CommandService commandService = new CommandService();
-	private ExecutorService executor;
 	
 	private static final String OBJECT_KEY = "object";
 	private static final String METHOD_KEY = "method";
@@ -50,7 +49,7 @@ public class MessageInput extends Thread {
 						map.get(OBJECT_KEY), socket);
 				
 				
-				Thread messageSender = new MessageOutput(obj, MethodsType.valueOf(map.get(METHOD_KEY)), socket);
+				Thread messageSender = new MessageOutputGenerator(obj, MethodsType.valueOf(map.get(METHOD_KEY)), socket);
 				messageSender.start();
 			}
 		} catch (IOException e) {

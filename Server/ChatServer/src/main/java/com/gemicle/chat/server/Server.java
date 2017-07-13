@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.gemicle.chat.service.MessageInput;
+import com.gemicle.chat.service.message.MessageInput;
 
 public class Server extends Thread {
 

@@ -1,11 +1,11 @@
-package com.gemicle.chat.service;
+package com.gemicle.chat.service.message;
 
 import org.hibernate.classic.Session;
 
 import com.gemicle.chat.pojo.Message;
 import com.gemicle.chat.session.SessionService;
 
-public class MessageService {
+public class MessageServiceHibernate {
 	private SessionService hibernateService = new SessionService();
 
 	public long save(Message message) {
