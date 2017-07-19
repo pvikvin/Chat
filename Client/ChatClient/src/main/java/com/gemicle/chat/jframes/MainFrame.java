@@ -9,12 +9,19 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
+import com.gemicle.chat.message.in.MessageInput;
+
 public class MainFrame {
 
 	private JFrame frame;
+	private JTextArea textMessageUsers;
+	private JTextArea textMessageUser;
+	private JButton btnSendMessage;
 
 	public MainFrame() {
 		initialize();
+		frame.setVisible(true);
+		readInMessage();
 	}
 
 	private void initialize() {
@@ -25,7 +32,7 @@ public class MainFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		SpringLayout springLayout = new SpringLayout();
 		frame.getContentPane().setLayout(springLayout);
-		
+
 		JPanel panel = new JPanel();
 		springLayout.putConstraint(SpringLayout.NORTH, panel, 10, SpringLayout.NORTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, panel, 0, SpringLayout.WEST, frame.getContentPane());
@@ -33,14 +40,14 @@ public class MainFrame {
 		frame.getContentPane().add(panel);
 		SpringLayout sl_panel = new SpringLayout();
 		panel.setLayout(sl_panel);
-		
-		JTextArea textMessageUsers = new JTextArea();
+
+		textMessageUsers = new JTextArea();
 		sl_panel.putConstraint(SpringLayout.NORTH, textMessageUsers, 0, SpringLayout.NORTH, panel);
 		sl_panel.putConstraint(SpringLayout.WEST, textMessageUsers, 10, SpringLayout.WEST, panel);
 		sl_panel.putConstraint(SpringLayout.SOUTH, textMessageUsers, 247, SpringLayout.NORTH, panel);
 		sl_panel.putConstraint(SpringLayout.EAST, textMessageUsers, 774, SpringLayout.WEST, panel);
 		panel.add(textMessageUsers);
-		
+
 		JPanel panel_1 = new JPanel();
 		springLayout.putConstraint(SpringLayout.SOUTH, panel, -6, SpringLayout.NORTH, panel_1);
 		springLayout.putConstraint(SpringLayout.NORTH, panel_1, 273, SpringLayout.NORTH, frame.getContentPane());
@@ -49,14 +56,14 @@ public class MainFrame {
 		frame.getContentPane().add(panel_1);
 		SpringLayout sl_panel_1 = new SpringLayout();
 		panel_1.setLayout(sl_panel_1);
-		
-		JTextArea textMessageUser = new JTextArea();
+
+		textMessageUser = new JTextArea();
 		sl_panel_1.putConstraint(SpringLayout.NORTH, textMessageUser, 0, SpringLayout.NORTH, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, textMessageUser, 0, SpringLayout.WEST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, textMessageUser, 123, SpringLayout.NORTH, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.EAST, textMessageUser, 764, SpringLayout.WEST, panel_1);
 		panel_1.add(textMessageUser);
-		
+
 		JPanel panel_2 = new JPanel();
 		springLayout.putConstraint(SpringLayout.SOUTH, panel_1, -12, SpringLayout.NORTH, panel_2);
 		springLayout.putConstraint(SpringLayout.WEST, panel_2, 10, SpringLayout.WEST, frame.getContentPane());
@@ -66,23 +73,31 @@ public class MainFrame {
 		frame.getContentPane().add(panel_2);
 		SpringLayout sl_panel_2 = new SpringLayout();
 		panel_2.setLayout(sl_panel_2);
-		
-		JButton btnSendMessage = new JButton("Send Message");
+
+		btnSendMessage = new JButton("Send Message");
 		btnSendMessage.setToolTipText("Click this button and your message will be sent to chat users");
 		btnSendMessage.addActionListener(listener);
-		
+
 		sl_panel_2.putConstraint(SpringLayout.NORTH, btnSendMessage, 10, SpringLayout.NORTH, panel_2);
 		sl_panel_2.putConstraint(SpringLayout.WEST, btnSendMessage, -164, SpringLayout.EAST, panel_2);
 		sl_panel_2.putConstraint(SpringLayout.SOUTH, btnSendMessage, 37, SpringLayout.NORTH, panel_2);
 		sl_panel_2.putConstraint(SpringLayout.EAST, btnSendMessage, 0, SpringLayout.EAST, panel_2);
 		panel_2.add(btnSendMessage);
+
 	}
-	
-	private ActionListener listener = new ActionListener(){
+
+	private void readInMessage() {
+		MessageInput messageInput = new MessageInput(this);
+		messageInput.start();
+	}
+
+	private ActionListener listener = new ActionListener() {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			
-			
-		}};
+		public void actionPerformed(ActionEvent action) {
+			if (action.getSource() == btnSendMessage) {
+
+			}
+		}
+	};
 }

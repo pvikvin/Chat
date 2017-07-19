@@ -9,18 +9,22 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
+import com.gemicle.chat.enums.MethodsType;
+import com.gemicle.chat.jframes.MainFrame;
+import com.gemicle.chat.preferences.Preference;
+import com.gemicle.chat.server.SocketManager;
+
 public class MessageInput extends Thread {
 
 	private InputStream sin;
 	private DataInputStream in;
-	private Socket socket;
 	private ObjectMapper mapper = new ObjectMapper();
+	private MainFrame main;
 
-	private static final String OBJECT_KEY = "object";
-	private static final String METHOD_KEY = "method";
 
-	public MessageInput(Socket socket) {
-		this.socket = socket;
+
+	public MessageInput(MainFrame main) {
+		this.main = main;
 	}
 
 	@Override
@@ -31,15 +35,21 @@ public class MessageInput extends Thread {
 	private void inputMessage() {
 		try {
 			while (true) {
-				sin = socket.getInputStream();
+				sin = SocketManager.getSocket().getInputStream();
 				in = new DataInputStream(sin);
 
 				String json = in.readUTF();
 				Map<String, String> map = mapper.readValue(json, new TypeReference<Map<String, String>>() {
 				});
 
+				new MessageRecipientGenerator(map, main);
+
+				// Object obj =
+				// commandService.executeCommand(MethodsType.valueOf(map.get(METHOD_KEY)),
+				// map.get(OBJECT_KEY));
+
 				int m = 9;
-				
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

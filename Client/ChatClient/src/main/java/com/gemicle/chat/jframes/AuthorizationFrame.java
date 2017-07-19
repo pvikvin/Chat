@@ -32,31 +32,15 @@ public class AuthorizationFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource() == btnOK){
-				
+			if (e.getSource() == btnOK) {
 				Preference.user = new User(textUserName.getText());
 				messageOutput.start();
 			}
-			if(e.getSource() == btnCancel){
+			if (e.getSource() == btnCancel) {
 				setVisible(false);
 			}
 		}
 	};
-	
-	public static void main(String[] args) {
-		AuthorizationFrame auth = new AuthorizationFrame();
-		if(Preference.socket != null && Preference.user != null){
-			auth.setVisible(false);
-		} 
-		
-		try {
-			Preference.socket = new Socket(IP, PORT);
-		} catch (UnknownHostException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
 
 	public AuthorizationFrame() {
 		super("Authorization");
@@ -86,7 +70,7 @@ public class AuthorizationFrame extends JFrame {
 
 		btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(listener);
-		
+
 		springLayout.putConstraint(SpringLayout.NORTH, btnCancel, 9, SpringLayout.SOUTH, textUserName);
 		springLayout.putConstraint(SpringLayout.EAST, btnCancel, -10, SpringLayout.EAST, getContentPane());
 		getContentPane().add(btnCancel);
@@ -94,16 +78,17 @@ public class AuthorizationFrame extends JFrame {
 		springLayout.putConstraint(SpringLayout.SOUTH, btnOK, 0, SpringLayout.SOUTH, btnCancel);
 		springLayout.putConstraint(SpringLayout.EAST, btnOK, -6, SpringLayout.WEST, btnCancel);
 		getContentPane().add(btnOK);
+
 		initialize();
 	}
 
 	private void initialize() {
 		setSize(300, 120);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		if(Preference.socket != null && Preference.user != null){
+
+		if (Preference.socket != null && Preference.user != null) {
 			setVisible(false);
-		} else{
+		} else {
 			setVisible(true);
 		}
 	}

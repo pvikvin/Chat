@@ -23,9 +23,8 @@ public class MessageUser implements MessageSender {
 	@Override
 	public void send() {
 		try {
-
 			Map<String, String> parametrs = new HashMap<String, String>();
-			parametrs.put(METHOD_KEY, MethodsType.CREATE_USER.toString()); 
+			parametrs.put(METHOD_KEY, MethodsType.CREATE_USER.toString());
 			parametrs.put(OBJECT_KEY, mapper.writeValueAsString(Preference.user));
 
 			String json = mapper.writeValueAsString(parametrs);
