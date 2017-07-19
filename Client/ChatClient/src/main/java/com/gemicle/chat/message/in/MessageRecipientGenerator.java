@@ -28,6 +28,8 @@ public class MessageRecipientGenerator {
 		this.main = main;
 		
 		this.obj = map.get(OBJECT_KEY);
+		
+		distribution();
 	}
 
 	private void distribution() {

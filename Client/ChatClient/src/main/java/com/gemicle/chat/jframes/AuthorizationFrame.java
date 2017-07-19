@@ -83,7 +83,7 @@ public class AuthorizationFrame extends JFrame {
 	}
 
 	private void initialize() {
-		setSize(300, 120);
+		setSize(400, 120);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		if (Preference.socket != null && Preference.user != null) {

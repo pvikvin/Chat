@@ -26,10 +26,9 @@ public class ClientTest {
 				new AuthorizationFrame();
 			}
 			
-//			MessageInput input = new MessageInput();
-//			input.start();
+			new MainFrame();
 			
-			int p = 9;
+			while(true){}
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();

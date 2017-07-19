@@ -30,7 +30,6 @@
  
  		<mapping class="com.gemicle.chat.pojo.User"/>
  		<mapping class="com.gemicle.chat.pojo.Message"/>
- 		
  		 
     </session-factory>
 </hibernate-configuration>

@@ -1,4 +1,4 @@
-package com.gemicle.chat.service.message;
+package com.gemicle.chat.service.message.input;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -47,7 +47,6 @@ public class MessageInput extends Thread {
 
 				Object obj = commandService.executeCommand(MethodsType.valueOf(map.get(METHOD_KEY)),
 						map.get(OBJECT_KEY), socket);
-				
 				
 				Thread messageSender = new MessageOutputGenerator(obj, MethodsType.valueOf(map.get(METHOD_KEY)), socket);
 				messageSender.start();
