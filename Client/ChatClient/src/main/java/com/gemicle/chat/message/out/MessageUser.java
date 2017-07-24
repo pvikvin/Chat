@@ -1,45 +1,44 @@
 package com.gemicle.chat.message.out;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.gemicle.chat.enums.MethodsType;
 import com.gemicle.chat.preferences.Preference;
 
-public class MessageUser implements MessageSender {
+public class MessageUser extends MessageSender {
 
-	private ObjectMapper mapper = new ObjectMapper();
+	private static ObjectMapper mapper = new ObjectMapper();
 	private static final String OBJECT_KEY = "object";
 	private static final String METHOD_KEY = "method";
 
-	private OutputStream sout;
-	private DataOutputStream out;
+	private static MessageParameter messageParameter = new MessageParameter(){
 
-	@Override
-	public void send() {
-		try {
-			Map<String, String> parametrs = new HashMap<String, String>();
-			parametrs.put(METHOD_KEY, MethodsType.CREATE_USER.toString());
-			parametrs.put(OBJECT_KEY, mapper.writeValueAsString(Preference.user));
-
-			String json = mapper.writeValueAsString(parametrs);
-
-			sout = Preference.socket.getOutputStream();
-			out = new DataOutputStream(sout);
-
-			out.writeUTF(json);
-			out.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-
-		}
-
+		@Override
+		public Map<String, String> generateParameters() {
+			Map<String, String> parametersMap = null;
+			try {
+				parametersMap = new HashMap<String, String>();
+				parametersMap.put(METHOD_KEY, MethodsType.CREATE_USER.toString());
+				parametersMap.put(OBJECT_KEY, mapper.writeValueAsString(Preference.user));
+			} catch (JsonGenerationException e) {
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
+			return parametersMap;
+		}};
+	
+	public MessageUser(){
+		super(messageParameter);
 	}
 
 }

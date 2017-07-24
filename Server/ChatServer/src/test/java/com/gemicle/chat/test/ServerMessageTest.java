@@ -39,7 +39,10 @@ public class ServerMessageTest {
 
 		// try {
 		server.start();
-		while (true) {
+		try {
+			Thread.sleep(Long.MAX_VALUE);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		// InetAddress ipAddress = InetAddress.getByName(IP);
 		// for (int i = 1; i < 3; i++) {

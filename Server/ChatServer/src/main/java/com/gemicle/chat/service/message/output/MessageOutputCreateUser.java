@@ -13,14 +13,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.gemicle.chat.enums.MethodsType;
 import com.gemicle.chat.pojo.Message;
 import com.gemicle.chat.pojo.User;
-import com.gemicle.chat.server.SocketManager;
 
 public class MessageOutputCreateUser implements MessageOutput {
 
-	private ObjectMapper mapper = new ObjectMapper();
 	private static final String OBJECT_KEY = "object";
 	private static final String METHOD_KEY = "method";
-
+	
+	private ObjectMapper mapper = new ObjectMapper();
 	private Socket socketSender;
 	private User user;
 
@@ -35,18 +34,17 @@ public class MessageOutputCreateUser implements MessageOutput {
 
 		Message message = new Message();
 		message.setDate(new Date());
-		message.setMessageText("Connected new user: " + user.getName());
+		message.setMessageText(": сonnected new user");
 		message.setUser_id(user.getId());
 
-		sendMessageAllUsers(message);
+		new MessageOutputSimple(socketSender, message).messageBuild();
 	}
-	
+
 	@Override
 	public void sendMessageUser(Socket socket, Object obj) {
 		try {
-			
 			Map<String, String> parametrs = new HashMap<String, String>();
-			parametrs.put(METHOD_KEY, MethodsType.CREATE_USER.toString()); 
+			parametrs.put(METHOD_KEY, MethodsType.CREATE_USER.toString());
 			parametrs.put(OBJECT_KEY, mapper.writeValueAsString(obj));
 
 			OutputStream sout = socket.getOutputStream();
@@ -56,16 +54,8 @@ public class MessageOutputCreateUser implements MessageOutput {
 
 			out.writeUTF(json);
 			out.flush();
-
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-	
-	private void sendMessageAllUsers(Message message) {
-		Map<User, Socket> userSockets = SocketManager.getUserSockets();
-		for (Map.Entry<User, Socket> entry : userSockets.entrySet()) {
-			sendMessageUser(entry.getValue(), message);
 		}
 	}
 

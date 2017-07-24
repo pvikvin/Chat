@@ -12,6 +12,8 @@ public class CommandService {
 			return new UserSave(jsonObj, socket).execute();
 		case CREATE_MESSAGE:
 			return new MessageSimpleSave(jsonObj).execute();
+		case CREATE_MESSAGE_FILE:
+			return new MessageFileSave(jsonObj).execute();
 		default:
 			break;
 		}

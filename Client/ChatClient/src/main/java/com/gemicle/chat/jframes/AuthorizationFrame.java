@@ -1,32 +1,29 @@
 package com.gemicle.chat.jframes;
 
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import com.gemicle.chat.message.out.MessageOutput;
-import com.gemicle.chat.message.out.MessageSender;
 import com.gemicle.chat.message.out.MessageUser;
 import com.gemicle.chat.pojo.User;
 import com.gemicle.chat.preferences.Preference;
-
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.awt.event.ActionEvent;
-import javax.swing.JButton;
+import com.gemicle.chat.server.SocketManager;
 
 public class AuthorizationFrame extends JFrame {
+
 	private static final int PORT = 5555;
 	private static final String IP = "127.0.0.1";
-
 	private JTextField textUserName;
 	private JButton btnOK;
 	private JButton btnCancel;
-	private MessageSender messageSender = new MessageUser();
-	private MessageOutput messageOutput = new MessageOutput(messageSender);
+	private Thread messageOutput = new MessageOutput(new MessageUser());
 
 	private ActionListener listener = new ActionListener() {
 
@@ -36,14 +33,44 @@ public class AuthorizationFrame extends JFrame {
 				Preference.user = new User(textUserName.getText());
 				messageOutput.start();
 			}
-			if (e.getSource() == btnCancel) {
-				setVisible(false);
-			}
+			setVisible(false);
 		}
 	};
 
 	public AuthorizationFrame() {
 		super("Authorization");
+		initialize();
+	}
+
+	public static void main(String[] args) {
+		SocketManager.connectToServer(IP, PORT);
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					MainFrame main = new MainFrame();
+					main.setVisible(true);
+					main.readInMessage();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		if (Preference.user == null) {
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					try {
+						AuthorizationFrame auth = new AuthorizationFrame();
+						auth.setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+	}
+
+	private void initialize() {
 		SpringLayout springLayout = new SpringLayout();
 		getContentPane().setLayout(springLayout);
 
@@ -79,17 +106,9 @@ public class AuthorizationFrame extends JFrame {
 		springLayout.putConstraint(SpringLayout.EAST, btnOK, -6, SpringLayout.WEST, btnCancel);
 		getContentPane().add(btnOK);
 
-		initialize();
-	}
-
-	private void initialize() {
 		setSize(400, 120);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		if (Preference.socket != null && Preference.user != null) {
-			setVisible(false);
-		} else {
-			setVisible(true);
-		}
+		setVisible(true);
 	}
 }

@@ -10,34 +10,43 @@ import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
 import com.gemicle.chat.message.in.MessageInput;
+import com.gemicle.chat.message.out.MessageFile;
+import com.gemicle.chat.message.out.MessageOutput;
+import com.gemicle.chat.message.out.MessageSender;
+import com.gemicle.chat.message.out.MessageSimple;
+import com.gemicle.chat.service.FileService;
 
-public class MainFrame {
+import lombok.Data;
+import javax.swing.JLabel;
 
-	private JFrame frame;
+@Data
+public class MainFrame extends JFrame {
+
 	private JTextArea textMessageUsers;
 	private JTextArea textMessageUser;
 	private JButton btnSendMessage;
+	private JButton btnOpenFile;
+	private JLabel lblPathFile;
+	
+	private FileService fileService = new FileService();
 
 	public MainFrame() {
 		initialize();
-		frame.setVisible(true);
-		readInMessage();
 	}
 
 	private void initialize() {
-		frame = new JFrame();
-		frame.setResizable(false);
-		frame.setSize(800, 500);
-		frame.setTitle("Chat");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
+		setSize(800, 500);
+		setTitle("Chat");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		SpringLayout springLayout = new SpringLayout();
-		frame.getContentPane().setLayout(springLayout);
+		getContentPane().setLayout(springLayout);
 
 		JPanel panel = new JPanel();
-		springLayout.putConstraint(SpringLayout.NORTH, panel, 10, SpringLayout.NORTH, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.WEST, panel, 0, SpringLayout.WEST, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, panel, 784, SpringLayout.WEST, frame.getContentPane());
-		frame.getContentPane().add(panel);
+		springLayout.putConstraint(SpringLayout.NORTH, panel, 10, SpringLayout.NORTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, panel, 0, SpringLayout.WEST, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, panel, 784, SpringLayout.WEST, getContentPane());
+		getContentPane().add(panel);
 		SpringLayout sl_panel = new SpringLayout();
 		panel.setLayout(sl_panel);
 
@@ -50,10 +59,10 @@ public class MainFrame {
 
 		JPanel panel_1 = new JPanel();
 		springLayout.putConstraint(SpringLayout.SOUTH, panel, -6, SpringLayout.NORTH, panel_1);
-		springLayout.putConstraint(SpringLayout.NORTH, panel_1, 273, SpringLayout.NORTH, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.WEST, panel_1, 10, SpringLayout.WEST, frame.getContentPane());
+		springLayout.putConstraint(SpringLayout.NORTH, panel_1, 273, SpringLayout.NORTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, panel_1, 10, SpringLayout.WEST, getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, panel_1, 0, SpringLayout.EAST, panel);
-		frame.getContentPane().add(panel_1);
+		getContentPane().add(panel_1);
 		SpringLayout sl_panel_1 = new SpringLayout();
 		panel_1.setLayout(sl_panel_1);
 
@@ -66,11 +75,11 @@ public class MainFrame {
 
 		JPanel panel_2 = new JPanel();
 		springLayout.putConstraint(SpringLayout.SOUTH, panel_1, -12, SpringLayout.NORTH, panel_2);
-		springLayout.putConstraint(SpringLayout.WEST, panel_2, 10, SpringLayout.WEST, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, panel_2, -10, SpringLayout.EAST, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.NORTH, panel_2, -57, SpringLayout.SOUTH, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, panel_2, -10, SpringLayout.SOUTH, frame.getContentPane());
-		frame.getContentPane().add(panel_2);
+		springLayout.putConstraint(SpringLayout.WEST, panel_2, 10, SpringLayout.WEST, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, panel_2, -10, SpringLayout.EAST, getContentPane());
+		springLayout.putConstraint(SpringLayout.NORTH, panel_2, -57, SpringLayout.SOUTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, panel_2, -10, SpringLayout.SOUTH, getContentPane());
+		getContentPane().add(panel_2);
 		SpringLayout sl_panel_2 = new SpringLayout();
 		panel_2.setLayout(sl_panel_2);
 
@@ -84,9 +93,18 @@ public class MainFrame {
 		sl_panel_2.putConstraint(SpringLayout.EAST, btnSendMessage, 0, SpringLayout.EAST, panel_2);
 		panel_2.add(btnSendMessage);
 
+		btnOpenFile = new JButton("Open file");
+		btnOpenFile.addActionListener(listener);
+		sl_panel_2.putConstraint(SpringLayout.NORTH, btnOpenFile, 0, SpringLayout.NORTH, btnSendMessage);
+		sl_panel_2.putConstraint(SpringLayout.EAST, btnOpenFile, -6, SpringLayout.WEST, btnSendMessage);
+		panel_2.add(btnOpenFile);
+		
+		lblPathFile = new JLabel("");
+		lblPathFile.setVisible(false);
+
 	}
 
-	private void readInMessage() {
+	public void readInMessage() {
 		MessageInput messageInput = new MessageInput(this);
 		messageInput.start();
 	}
@@ -95,9 +113,27 @@ public class MainFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent action) {
+			MessageSender messageSender = null;
 			if (action.getSource() == btnSendMessage) {
-
+				messageSender = new MessageSimple(MainFrame.this);				
+			}else if(action.getSource() == btnOpenFile){
+				lblPathFile.setText(fileService.getPathFile());
+				messageSender = new MessageFile(MainFrame.this);
 			}
+			Thread messageOutput = new MessageOutput(messageSender);
+			messageOutput.start();
+			try {
+				messageOutput.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			cleanForm();
 		}
 	};
+	
+	private void cleanForm(){
+		textMessageUser.setText("");
+		lblPathFile.setText("");
+	}
 }
