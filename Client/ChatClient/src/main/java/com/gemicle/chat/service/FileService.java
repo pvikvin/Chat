@@ -1,35 +1,42 @@
 package com.gemicle.chat.service;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import javax.swing.JFileChooser;
 
 public class FileService {
 
 	public byte[] convertToByteArray(File file) throws IOException {
-		byte[] bytes = null;
-		ByteArrayOutputStream baos = null;
-		ObjectOutputStream oos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			oos = new ObjectOutputStream(baos);
-			oos.writeObject(file);
-			oos.flush();
-			bytes = baos.toByteArray();
-		} finally {
-			if (oos != null) {
-				oos.close();
-			}
-			if (baos != null) {
-				baos.close();
-			}
-		}
-		return bytes;
+        long length = file.length();
+
+        if (length > Integer.MAX_VALUE) {
+            throw new IOException("File is too large!");
+        }
+
+        byte[] bytes = new byte[(int)length];
+
+        int offset = 0;
+        int numRead = 0;
+
+        InputStream is = new FileInputStream(file);
+        try {
+            while (offset < bytes.length
+                   && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+                offset += numRead;
+            }
+        } finally {
+            is.close();
+        }
+
+        if (offset < bytes.length) {
+            throw new IOException("Could not completely read file "+file.getName());
+        }
+        return bytes;
 	}
 
 	public File convertToFile(byte[] bytes) throws IOException, ClassNotFoundException {
@@ -60,10 +67,21 @@ public class FileService {
 
 		JFileChooser fc = new JFileChooser();
 		fc.setAcceptAllFileFilterUsed(true);
+
 		if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			file = new File(fc.getSelectedFile().getAbsolutePath());
 		}
+
 		return file;
 	}
 
+	public String getSavePath(){
+		JFileChooser chooser=new JFileChooser();
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		chooser.showSaveDialog(null);
+
+		String path=chooser.getSelectedFile().getAbsolutePath();
+		return path;
+	}
+	
 }

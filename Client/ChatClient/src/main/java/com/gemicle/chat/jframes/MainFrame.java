@@ -14,10 +14,10 @@ import com.gemicle.chat.message.out.MessageFile;
 import com.gemicle.chat.message.out.MessageOutput;
 import com.gemicle.chat.message.out.MessageSender;
 import com.gemicle.chat.message.out.MessageSimple;
+import com.gemicle.chat.preferences.Buffer;
 import com.gemicle.chat.service.FileService;
 
 import lombok.Data;
-import javax.swing.JLabel;
 
 @Data
 public class MainFrame extends JFrame {
@@ -25,8 +25,7 @@ public class MainFrame extends JFrame {
 	private JTextArea textMessageUsers;
 	private JTextArea textMessageUser;
 	private JButton btnSendMessage;
-	private JButton btnOpenFile;
-	private JLabel lblPathFile;
+	private JButton btnOpenSaveFile;
 	
 	private FileService fileService = new FileService();
 
@@ -93,15 +92,13 @@ public class MainFrame extends JFrame {
 		sl_panel_2.putConstraint(SpringLayout.EAST, btnSendMessage, 0, SpringLayout.EAST, panel_2);
 		panel_2.add(btnSendMessage);
 
-		btnOpenFile = new JButton("Open file");
-		btnOpenFile.addActionListener(listener);
-		sl_panel_2.putConstraint(SpringLayout.NORTH, btnOpenFile, 0, SpringLayout.NORTH, btnSendMessage);
-		sl_panel_2.putConstraint(SpringLayout.EAST, btnOpenFile, -6, SpringLayout.WEST, btnSendMessage);
-		panel_2.add(btnOpenFile);
+		btnOpenSaveFile = new JButton("Send file");
+		sl_panel_2.putConstraint(SpringLayout.WEST, btnOpenSaveFile, -123, SpringLayout.WEST, btnSendMessage);
+		btnOpenSaveFile.addActionListener(listener);
+		sl_panel_2.putConstraint(SpringLayout.NORTH, btnOpenSaveFile, 0, SpringLayout.NORTH, btnSendMessage);
+		sl_panel_2.putConstraint(SpringLayout.EAST, btnOpenSaveFile, -6, SpringLayout.WEST, btnSendMessage);
+		panel_2.add(btnOpenSaveFile);
 		
-		lblPathFile = new JLabel("");
-		lblPathFile.setVisible(false);
-
 	}
 
 	public void readInMessage() {
@@ -116,8 +113,8 @@ public class MainFrame extends JFrame {
 			MessageSender messageSender = null;
 			if (action.getSource() == btnSendMessage) {
 				messageSender = new MessageSimple(MainFrame.this);				
-			}else if(action.getSource() == btnOpenFile){
-				lblPathFile.setText(fileService.getPathFile());
+			}else if(action.getSource() == btnOpenSaveFile){
+				Buffer.fileBuffer = fileService.getPathFile();
 				messageSender = new MessageFile(MainFrame.this);
 			}
 			Thread messageOutput = new MessageOutput(messageSender);
@@ -134,6 +131,5 @@ public class MainFrame extends JFrame {
 	
 	private void cleanForm(){
 		textMessageUser.setText("");
-		lblPathFile.setText("");
 	}
 }

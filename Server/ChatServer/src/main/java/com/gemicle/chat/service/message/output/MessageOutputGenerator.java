@@ -5,6 +5,7 @@ import java.net.Socket;
 import com.gemicle.chat.enums.MethodsType;
 import com.gemicle.chat.pojo.Message;
 import com.gemicle.chat.pojo.User;
+import com.gemicle.chat.pojo.FileMessage;
 
 public class MessageOutputGenerator extends Thread {
 
@@ -32,6 +33,8 @@ public class MessageOutputGenerator extends Thread {
 		case CREATE_MESSAGE:
 			messageOutput = new MessageOutputSimple(socketSender, (Message) obj);
 			break;
+		case CREATE_MESSAGE_FILE:
+			messageOutput = new MessageOutputFile(socketSender, (FileMessage) obj);
 		default:
 			break;
 		}

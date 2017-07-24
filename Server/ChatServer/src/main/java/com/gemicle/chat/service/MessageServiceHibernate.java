@@ -1,4 +1,4 @@
-package com.gemicle.chat.command;
+package com.gemicle.chat.service;
 
 import org.hibernate.classic.Session;
 

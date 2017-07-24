@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.gemicle.chat.pojo.Message;
+import com.gemicle.chat.service.MessageServiceHibernate;
 
 public class MessageSimpleSave implements Command<Message> {
 

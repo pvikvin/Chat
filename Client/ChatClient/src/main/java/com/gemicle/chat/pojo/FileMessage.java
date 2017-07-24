@@ -1,16 +1,13 @@
 package com.gemicle.chat.pojo;
 
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
-public class Message {
+public class FileMessage {
 	
 	private long id;
-	
+	private byte[] files;
+	private String name;
 	private long user_id;
 	
-	private String messageText;
-	private Date date;
 }

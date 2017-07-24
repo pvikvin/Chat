@@ -10,6 +10,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.gemicle.chat.enums.MethodsType;
 import com.gemicle.chat.jframes.MainFrame;
+import com.gemicle.chat.pojo.FileMessage;
 import com.gemicle.chat.pojo.Message;
 import com.gemicle.chat.pojo.User;
 
@@ -42,6 +43,10 @@ public class MessageRecipientGenerator {
 				Message message = mapper.readValue(map.get(OBJECT_KEY), Message.class);
 				messageRecipient = new MessageInputSimple(message, main);
 				break;
+			case CREATE_MESSAGE_FILE:
+				FileMessage fileMessage = mapper.readValue(map.get(OBJECT_KEY), FileMessage.class);
+				messageRecipient = new MessageFile(fileMessage, main);
+				break;	
 			default:
 				break;
 			}

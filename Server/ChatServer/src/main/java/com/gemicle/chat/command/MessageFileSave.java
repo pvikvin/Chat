@@ -6,12 +6,15 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.gemicle.chat.pojo.FileMessage;
 import com.gemicle.chat.pojo.Message;
+import com.gemicle.chat.service.FileMessageHibernate;
+import com.gemicle.chat.service.MessageServiceHibernate;
 
-public class MessageFileSave implements Command<Message> {
+public class MessageFileSave implements Command<FileMessage> {
 
 	private ObjectMapper mapper = new ObjectMapper();
-	private MessageServiceHibernate service = new MessageServiceHibernate();
+	private FileMessageHibernate service = new FileMessageHibernate();
 	private String jsonObject;
 
 	public MessageFileSave(String jsonObject) {
@@ -19,11 +22,11 @@ public class MessageFileSave implements Command<Message> {
 	}
 
 	@Override
-	public Message execute() {
-		Message message = null;
+	public FileMessage execute() {
+		FileMessage fileMessage = null;
 		try {
-			message = mapper.readValue(jsonObject, Message.class);
-			message.setId(service.save(message));
+			fileMessage = mapper.readValue(jsonObject, FileMessage.class);
+			fileMessage.setId(service.save(fileMessage));
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -32,7 +35,7 @@ public class MessageFileSave implements Command<Message> {
 			e.printStackTrace();
 		}
 
-		return message;
+		return fileMessage;
 	}
 
 }

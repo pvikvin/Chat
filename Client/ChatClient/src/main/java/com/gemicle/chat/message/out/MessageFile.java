@@ -2,7 +2,6 @@ package com.gemicle.chat.message.out;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +11,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.gemicle.chat.enums.MethodsType;
 import com.gemicle.chat.jframes.MainFrame;
-import com.gemicle.chat.pojo.Message;
+import com.gemicle.chat.pojo.FileMessage;
+import com.gemicle.chat.preferences.Buffer;
 import com.gemicle.chat.preferences.Preference;
 import com.gemicle.chat.service.FileService;
 
@@ -31,8 +31,8 @@ public class MessageFile extends MessageSender {
 			Map<String, String> parametersMap = null;
 			try {
 				parametersMap = new HashMap<String, String>();
-				parametersMap.put(METHOD_KEY, MethodsType.CREATE_MESSAGE.toString());
-				parametersMap.put(OBJECT_KEY, mapper.writeValueAsString(generateMessage()));
+				parametersMap.put(METHOD_KEY, MethodsType.CREATE_MESSAGE_FILE.toString());
+				parametersMap.put(OBJECT_KEY, mapper.writeValueAsString(generateFile()));
 			} catch (JsonGenerationException e) {
 				e.printStackTrace();
 			} catch (JsonMappingException e) {
@@ -50,21 +50,21 @@ public class MessageFile extends MessageSender {
 		this.mainFrame = mainFrame;
 	}
 
-	private static Message generateMessage() {
-
-		Message message = new Message();
-		message.setUser_id(Preference.user.getId());
-		message.setMessageText(mainFrame.getTextMessageUser().getText());
-		message.setDate(new Date());
-		//mainFrame.getLblPathFile().getText()
+	private static FileMessage generateFile() {
+		FileMessage fileMessage = null;
 		try {
-			File file = new File("D:/img/google.png");
-			byte[] bytes = fileService.convertToByteArray(file);
-			message.setFile(bytes);
+			File file = new File(Buffer.fileBuffer);
+			
+			fileMessage = new FileMessage();
+			fileMessage.setName(file.getName());
+			fileMessage.setUser_id(Preference.user.getId());
+			fileMessage.setFiles(fileService.convertToByteArray(file));
+			
+			Buffer.fileBuffer = "";
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return message;
+		return fileMessage;
 	}
 }
